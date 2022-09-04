@@ -8,6 +8,8 @@
     tools:context="com.ss.video.rtc.demo.quickstart.RTCRoomActivity"
     tools:ignore="ContentDescription,RtlHardcoded,SpUsage">
 
+
+<!--    标题栏 + 左：前后镜头 + 右：声音（听筒/扬声器）-->
     <FrameLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
@@ -50,6 +52,7 @@
             app:layout_constraintTop_toBottomOf="@id/self_video_container" />
     </FrameLayout>
 
+<!--    底边 + 左：麦克风开关 + 退出房间开关 + 右：视频开关-->
     <FrameLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
@@ -83,13 +86,13 @@
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/self_video_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/remote_video_1_container"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/remote_video_0_container"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+            android:id="@+id/self_video_container"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toTopOf="@id/remote_video_1_container"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/remote_video_0_container"
+            app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
     <TextView
         android:id="@+id/self_video_user_id_tv"
@@ -103,7 +106,7 @@
     <FrameLayout
         android:id="@+id/remote_video_0_container"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toTopOf="@id/remote_video_2_container"
         app:layout_constraintLeft_toRightOf="@id/self_video_container"
         app:layout_constraintRight_toRightOf="parent"
@@ -119,13 +122,13 @@
         app:layout_constraintRight_toRightOf="@id/remote_video_0_container" />
 
     <FrameLayout
-        android:id="@+id/remote_video_1_container"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_bar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/remote_video_2_container"
-        app:layout_constraintTop_toBottomOf="@id/self_video_container" />
+            android:id="@+id/remote_video_1_container"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:layout_constraintBottom_toTopOf="@id/bottom_bar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/remote_video_2_container"
+            app:layout_constraintTop_toBottomOf="@id/self_video_container" />
 
     <TextView
         android:id="@+id/remote_video_1_user_id_tv"
@@ -139,7 +142,7 @@
     <FrameLayout
         android:id="@+id/remote_video_2_container"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="200dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_bar"
         app:layout_constraintLeft_toRightOf="@id/remote_video_1_container"
         app:layout_constraintRight_toRightOf="parent"
@@ -153,5 +156,47 @@
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@id/remote_video_2_container"
         app:layout_constraintRight_toRightOf="@id/remote_video_2_container" />
+
+    <FrameLayout
+            android:id="@+id/voice_chat_demo_main_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F20E0825"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/bottom_bar">
+
+        <EditText
+                android:id="@+id/voice_chat_demo_main_input_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="88dp"
+                android:background="@drawable/voice_chat_demo_main_option_input_bg"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:hint="说点什么"
+                android:maxLines="3"
+                android:minHeight="36dp"
+                android:paddingHorizontal="16dp"
+                android:textColor="@color/white"
+                android:textColorHint="#46FFFFFF"
+                android:textSize="14dp" />
+
+        <TextView
+                android:id="@+id/voice_chat_demo_main_input_send"
+                android:layout_width="60dp"
+                android:layout_height="28dp"
+                android:layout_gravity="right|bottom"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="16dp"
+                android:background="#1664FF"
+                android:gravity="center"
+                android:text="发送"
+                android:textColor="@color/white"
+                android:textSize="14dp" />
+    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

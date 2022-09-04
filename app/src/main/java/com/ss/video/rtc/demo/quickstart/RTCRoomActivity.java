@@ -113,6 +113,12 @@ public class RTCRoomActivity extends AppCompatActivity {
 
     private RTCRoomEventHandlerAdapter mIRtcRoomEventHandler = new RTCRoomEventHandlerAdapter() {
 
+        @Override
+        public void onUserMessageReceived(String uid, String message) {
+            super.onUserMessageReceived(uid, message);
+            Log.d("UserMessageRecevied", uid + " " + message);
+        }
+
         /**
          * 远端主播角色用户加入房间回调。
          */
@@ -352,4 +358,6 @@ public class RTCRoomActivity extends AppCompatActivity {
         mIRtcRoomEventHandler = null;
         mRTCVideo = null;
     }
+
+
 }
