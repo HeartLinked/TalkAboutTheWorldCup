@@ -86,13 +86,15 @@
     </FrameLayout>
 
     <FrameLayout
-            android:id="@+id/self_video_container"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/remote_video_1_container"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/remote_video_0_container"
-            app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        android:id="@+id/self_video_container"
+        android:layout_width="270dp"
+        android:layout_height="500dp"
+        android:background="@drawable/radius"
+        app:layout_constraintBottom_toTopOf="@+id/voice_chat_demo_main_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        />
 
     <TextView
         android:id="@+id/self_video_user_id_tv"
@@ -102,7 +104,7 @@
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@id/self_video_container"
         app:layout_constraintRight_toRightOf="@id/self_video_container" />
-
+<!--
     <FrameLayout
         android:id="@+id/remote_video_0_container"
         android:layout_width="0dp"
@@ -156,7 +158,7 @@
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="@id/remote_video_2_container"
         app:layout_constraintRight_toRightOf="@id/remote_video_2_container" />
-
+-->
 <!--   输入框 + 发送   -->
     <FrameLayout
             android:id="@+id/voice_chat_demo_main_input_layout"

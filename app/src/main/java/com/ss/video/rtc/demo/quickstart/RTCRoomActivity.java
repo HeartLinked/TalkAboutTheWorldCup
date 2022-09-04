@@ -138,7 +138,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         public void onUserLeave(String uid, int reason) {
             super.onUserLeave(uid, reason);
             Log.d("IRTCRoomEventHandler", "onUserLeave: " + uid);
-            runOnUiThread(() -> removeRemoteView(uid));
+            //runOnUiThread(() -> removeRemoteView(uid));
         }
 
     };
@@ -152,7 +152,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         public void onFirstRemoteVideoFrameDecoded(RemoteStreamKey remoteStreamKey, VideoFrameInfo frameInfo) {
             super.onFirstRemoteVideoFrameDecoded(remoteStreamKey, frameInfo);
             Log.d("IRTCVideoEventHandler", "onFirstRemoteVideoFrame: " + remoteStreamKey.toString());
-            runOnUiThread(() -> setRemoteView(remoteStreamKey.getRoomId(), remoteStreamKey.getUserId()));
+            //runOnUiThread(() -> setRemoteView(remoteStreamKey.getRoomId(), remoteStreamKey.getUserId()));
         }
 
         /**
@@ -204,12 +204,14 @@ public class RTCRoomActivity extends AppCompatActivity {
 
     private void initUI(String roomId, String userId) {
         mSelfContainer = findViewById(R.id.self_video_container);
+        /*
         mRemoteContainerArray[0] = findViewById(R.id.remote_video_0_container);
         mRemoteContainerArray[1] = findViewById(R.id.remote_video_1_container);
         mRemoteContainerArray[2] = findViewById(R.id.remote_video_2_container);
         mUserIdTvArray[0] = findViewById(R.id.remote_video_0_user_id_tv);
         mUserIdTvArray[1] = findViewById(R.id.remote_video_1_user_id_tv);
         mUserIdTvArray[2] = findViewById(R.id.remote_video_2_user_id_tv);
+        */
         findViewById(R.id.switch_camera).setOnClickListener((v) -> onSwitchCameraClick());
         mSpeakerIv = findViewById(R.id.switch_audio_router);   // 右上角
         mAudioIv = findViewById(R.id.switch_local_audio);      // 左下角
