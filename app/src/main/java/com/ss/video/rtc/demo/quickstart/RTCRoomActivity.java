@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.TextureView;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -184,6 +186,20 @@ public class RTCRoomActivity extends AppCompatActivity {
 
         initUI(roomId, userId);
         initEngineAndJoinRoom(roomId, userId);
+        initGetMessage();
+
+    }
+
+    private void initGetMessage(){
+        TextView textViewButton = findViewById(R.id.voice_chat_demo_main_input_send);
+        EditText textView = findViewById(R.id.voice_chat_demo_main_input_et);
+        textView.getText();
+        textViewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: 发送消息
+            }
+        });
     }
 
     private void initUI(String roomId, String userId) {
@@ -227,8 +243,6 @@ public class RTCRoomActivity extends AppCompatActivity {
         int joinRoomRes = mRTCRoom.joinRoom(Constants.TOKEN,
                 UserInfo.create(userId, ""), roomConfig);
         Log.i("TAG", "initEngineAndJoinRoom: " + joinRoomRes);
-
-
 
     }
 
@@ -291,6 +305,10 @@ public class RTCRoomActivity extends AppCompatActivity {
                 mRemoteContainerArray[i].removeAllViews();
             }
         }
+    }
+
+    private void onGetMessageClick() {
+
     }
 
     private void onSwitchCameraClick() {

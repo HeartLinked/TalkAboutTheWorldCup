@@ -88,7 +88,7 @@
     <FrameLayout
             android:id="@+id/self_video_container"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/remote_video_1_container"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/remote_video_0_container"
@@ -106,7 +106,7 @@
     <FrameLayout
         android:id="@+id/remote_video_0_container"
         android:layout_width="0dp"
-        android:layout_height="200dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/remote_video_2_container"
         app:layout_constraintLeft_toRightOf="@id/self_video_container"
         app:layout_constraintRight_toRightOf="parent"
@@ -124,8 +124,8 @@
     <FrameLayout
             android:id="@+id/remote_video_1_container"
             android:layout_width="0dp"
-            android:layout_height="200dp"
-            app:layout_constraintBottom_toTopOf="@id/bottom_bar"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/voice_chat_demo_main_input_layout"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/remote_video_2_container"
             app:layout_constraintTop_toBottomOf="@id/self_video_container" />
@@ -142,8 +142,8 @@
     <FrameLayout
         android:id="@+id/remote_video_2_container"
         android:layout_width="0dp"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_bar"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/voice_chat_demo_main_input_layout"
         app:layout_constraintLeft_toRightOf="@id/remote_video_1_container"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/remote_video_0_container" />
@@ -157,6 +157,7 @@
         app:layout_constraintBottom_toBottomOf="@id/remote_video_2_container"
         app:layout_constraintRight_toRightOf="@id/remote_video_2_container" />
 
+<!--   输入框 + 发送   -->
     <FrameLayout
             android:id="@+id/voice_chat_demo_main_input_layout"
             android:layout_width="match_parent"
