@@ -107,9 +107,6 @@ public class RTCRoomActivity extends AppCompatActivity {
     private final TextView[] mUserIdTvArray = new TextView[3];
     private final String[] mShowUidArray = new String[3];
 
-    private int userNumber = 0;
-    private UserInfo[] userInfos = new UserInfo[100];
-
 
     private RTCVideo mRTCVideo;
     private RTCRoom mRTCRoom;
@@ -124,8 +121,6 @@ public class RTCRoomActivity extends AppCompatActivity {
         public void onUserJoined(UserInfo userInfo, int elapsed) {
             super.onUserJoined(userInfo, elapsed);
             Log.d("IRTCRoomEventHandler", "onUserJoined: " + userInfo.getUid());
-            userNumber++;
-            userInfos[userNumber] = userInfo;
         }
 
         /**
