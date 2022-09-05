@@ -30,6 +30,10 @@
         <activity android:name="com.ss.video.rtc.demo.quickstart.RTCRoomActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
+        <service android:name="org.webrtc.RXScreenCaptureService"
+            android:exported="false"
+            android:enabled="true"
+            android:foregroundServiceType="mediaProjection" />
     </application>
 
 </manifest>

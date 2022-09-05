@@ -1,7 +1,10 @@
 package com.ss.video.rtc.demo.quickstart;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,6 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,18 +35,24 @@ import com.ss.bytertc.engine.data.AVSyncState;
 import com.ss.bytertc.engine.data.AudioRoute;
 import com.ss.bytertc.engine.data.CameraId;
 import com.ss.bytertc.engine.data.RemoteStreamKey;
+import com.ss.bytertc.engine.data.ScreenMediaType;
 import com.ss.bytertc.engine.data.StreamIndex;
 import com.ss.bytertc.engine.data.VideoFrameInfo;
+import com.ss.bytertc.engine.data.VideoSourceType;
 import com.ss.bytertc.engine.handler.IRTCEngineEventHandler;
 import com.ss.bytertc.engine.handler.IRTCRoomEventHandler;
 import com.ss.bytertc.engine.handler.IRTCVideoEventHandler;
 import com.ss.bytertc.engine.type.ChannelProfile;
 import com.ss.bytertc.engine.type.LocalStreamStats;
+import com.ss.bytertc.engine.type.MediaDeviceState;
 import com.ss.bytertc.engine.type.MediaStreamType;
 import com.ss.bytertc.engine.type.RTCRoomStats;
 import com.ss.bytertc.engine.type.RemoteStreamStats;
 import com.ss.bytertc.engine.type.StreamRemoveReason;
+import com.ss.bytertc.engine.type.VideoDeviceType;
 import com.ss.rtc.demo.quickstart.R;
+
+import org.webrtc.RXScreenCaptureService;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -94,7 +105,11 @@ import java.util.Locale;
  * 详细的API文档参见{https://www.volcengine.com/docs/6348/70080}
  */
 public class RTCRoomActivity extends AppCompatActivity {
-
+    //mRTCVideo.startVideoCapture()会开启视频采集，远端用户接收到的应该是这里采集到的stream，
+    //1. 这个采集到的视频是通过哪一个接口发送出去的？还是说是自动发送到远端的
+    //2. 开启视频采集具体是用什么采集，默认是用本地摄像头，我们怎么把它改成本地视频？
+    //3. 这样的话需要实现一个本地视频播放器，播放本地视频时相当于原demo的开启摄像头
+    //4. 这个播放器需要有选择视频/暂停/结束等功能，UI可以暂定展示在屏幕中心
     private ImageView mSpeakerIv;
     private ImageView mAudioIv;
     private ImageView mVideoIv;
@@ -113,6 +128,8 @@ public class RTCRoomActivity extends AppCompatActivity {
     private RTCVideo mRTCVideo;
     private RTCRoom mRTCRoom;
 
+    public static final int REQUEST_CODE_OF_SCREEN_SHARING = 101;
+
     private RTCRoomEventHandlerAdapter mIRtcRoomEventHandler = new RTCRoomEventHandlerAdapter() {
 
         @Override
@@ -124,7 +141,6 @@ public class RTCRoomActivity extends AppCompatActivity {
         /**
          * 远端主播角色用户加入房间回调。
          */
-
         @Override
         public void onUserJoined(UserInfo userInfo, int elapsed) {
             super.onUserJoined(userInfo, elapsed);
@@ -144,6 +160,20 @@ public class RTCRoomActivity extends AppCompatActivity {
     };
 
     private IRTCVideoEventHandler mIRtcVideoEventHandler = new IRTCVideoEventHandler() {
+
+        /*
+        @Override
+        public void onVideoDeviceStateChanged(String deviceId, VideoDeviceType deviceType, int deviceState, int deviceError) {
+            if (deviceType == VideoDeviceType.VIDEO_DEVICE_TYPE_SCREEN_CAPTURE_DEVICE) {
+                if (deviceState == MediaDeviceState.MEDIA_DEVICE_STATE_STARTED) {
+                    mRTCVideo.publishScreen(RTCEngine.MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
+                    mRTCVideo.setVideoSourceType(StreamIndex.STREAM_INDEX_SCREEN, VideoSourceType.VIDEO_SOURCE_TYPE_INTERNAL);
+                } else if (deviceState == MediaDeviceState.MEDIA_DEVICE_STATE_STOPPED
+                        || deviceState == MediaDeviceState.MEDIA_DEVICE_STATE_RUNTIMEERROR) {
+                    mRTCVideo.unpublishScreen(RTCEngine.MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
+                }
+            }
+        }*/
 
         /**
          * SDK收到第一帧远端视频解码数据后，用户收到此回调。
@@ -188,6 +218,59 @@ public class RTCRoomActivity extends AppCompatActivity {
         initEngineAndJoinRoom(roomId, userId);
         initGetMessage();
 
+        requestForScreenSharing();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_OF_SCREEN_SHARING && resultCode == Activity.RESULT_OK) {
+            Log.i("ShareScreen","startScreenShare function");
+            startScreenShare(data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void startScreenShare(Intent data) {
+        startRXScreenCaptureService(data);
+        //编码参数
+        VideoEncoderConfig config = new VideoEncoderConfig();
+        config.width = 720;
+        config.height = 1280;
+        config.frameRate = 15;
+        config.maxBitrate = 1600;
+        mRTCVideo.setScreenVideoEncoderConfig(config);
+        // 开启屏幕视频数据采集
+        mRTCVideo.startScreenCapture(ScreenMediaType.SCREEN_MEDIA_TYPE_VIDEO_AND_AUDIO, data);
+    }
+
+    private void startRXScreenCaptureService(@NonNull Intent data) {
+        Context context = this;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Intent intent = new Intent();
+            RTCRoomActivity mHostActivity = new RTCRoomActivity();
+            intent.putExtra(RXScreenCaptureService.KEY_LARGE_ICON, R.drawable.launcher_quick_start);
+            intent.putExtra(RXScreenCaptureService.KEY_SMALL_ICON, R.drawable.launcher_quick_start);
+            intent.putExtra(RXScreenCaptureService.KEY_LAUNCH_ACTIVITY, mHostActivity.getClass().getCanonicalName());
+            intent.putExtra(RXScreenCaptureService.KEY_CONTENT_TEXT, "正在录制/投射您的屏幕");
+            intent.putExtra(RXScreenCaptureService.KEY_RESULT_DATA, data);
+            context.startForegroundService(RXScreenCaptureService.getServiceIntent(context, RXScreenCaptureService.COMMAND_LAUNCH, intent));
+        }
+    }
+
+    // 向系统发起屏幕共享的权限请求
+    public void requestForScreenSharing() {
+        Log.i("ShareScreen","start ShareScreen");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Log.e("ShareScreen","当前系统版本过低，无法支持屏幕共享");
+            return;
+        }
+        MediaProjectionManager projectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        if (projectionManager != null) {
+            startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_CODE_OF_SCREEN_SHARING);
+        } else {
+            Log.e("ShareScreen","当前系统版本过低，无法支持屏幕共享");
+        }
     }
 
     private void initGetMessage(){
@@ -237,6 +320,9 @@ public class RTCRoomActivity extends AppCompatActivity {
         mRTCVideo.startVideoCapture();
         // 开启本地音频采集
         mRTCVideo.startAudioCapture();
+        //设置向SDK输入的视频
+        //mRTCVideo.setVideoSourceType(StreamIndex.STREAM_INDEX_SCREEN, VideoSourceType.VIDEO_SOURCE_TYPE_EXTERNAL);
+
         // 加入房间
         mRTCRoom = mRTCVideo.createRTCRoom(roomId);
         mRTCRoom.setRTCRoomEventHandler(mIRtcRoomEventHandler);
@@ -258,10 +344,11 @@ public class RTCRoomActivity extends AppCompatActivity {
         mSelfContainer.addView(renderView, params);
         videoCanvas.renderView = renderView;
         videoCanvas.uid = uid;
-        videoCanvas.isScreen = false;
+        videoCanvas.isScreen = true;
         videoCanvas.renderMode = VideoCanvas.RENDER_MODE_HIDDEN;
         // 设置本地视频渲染视图
-        mRTCVideo.setLocalVideoCanvas(StreamIndex.STREAM_INDEX_MAIN, videoCanvas);
+        // mRTCVideo.setLocalVideoCanvas(StreamIndex.STREAM_INDEX_MAIN, videoCanvas);
+        mRTCVideo.setLocalVideoCanvas(StreamIndex.STREAM_INDEX_SCREEN,videoCanvas);
     }
 
     private void setRemoteRenderView(String roomId, String uid, FrameLayout container) {
