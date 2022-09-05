@@ -116,6 +116,13 @@ public class RTCRoomActivity extends AppCompatActivity {
     private RTCRoomEventHandlerAdapter mIRtcRoomEventHandler = new RTCRoomEventHandlerAdapter() {
 
         @Override
+        public void onRoomMessageSendResult(long msgid, int error) {
+            super.onRoomMessageSendResult(msgid, error);
+            Log.d("sendMessageID", String.valueOf(msgid));
+            Log.d("SendMessageResult", String.valueOf(error));
+        }
+
+        @Override
         public void onUserMessageReceived(String uid, String message) {
             super.onUserMessageReceived(uid, message);
             Log.d("UserMessageRecevied", uid + " " + message);
@@ -139,6 +146,13 @@ public class RTCRoomActivity extends AppCompatActivity {
             super.onUserLeave(uid, reason);
             Log.d("IRTCRoomEventHandler", "onUserLeave: " + uid);
             //runOnUiThread(() -> removeRemoteView(uid));
+        }
+
+        @Override
+        public void onRoomStateChanged(String roomId, String uid, int state, String extraInfo){
+            super.onRoomStateChanged(roomId, uid, state, extraInfo);
+            Log.d("RoomStateUid", uid);
+            Log.d("RoomState", String.valueOf(state));
         }
 
     };
@@ -191,13 +205,14 @@ public class RTCRoomActivity extends AppCompatActivity {
     }
 
     private void initGetMessage(){
+
         TextView textViewButton = findViewById(R.id.voice_chat_demo_main_input_send);
         EditText textView = findViewById(R.id.voice_chat_demo_main_input_et);
-        textView.getText();
+
         textViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 发送消息
+                mRTCRoom.sendRoomMessage(textView.getText().toString());
             }
         });
     }
