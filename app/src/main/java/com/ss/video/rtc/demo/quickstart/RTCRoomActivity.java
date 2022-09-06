@@ -47,6 +47,7 @@ import com.ss.bytertc.engine.type.StreamRemoveReason;
 import com.ss.rtc.demo.quickstart.R;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -192,6 +193,9 @@ public class RTCRoomActivity extends AppCompatActivity {
     };
 
     private RecyclerView mVCChatRv;
+
+    private List<String> itemList = new ArrayList<>();
+
     private VCChatAdapter mVCChatAdapter;
 
     @Override
@@ -203,16 +207,17 @@ public class RTCRoomActivity extends AppCompatActivity {
         String roomId = intent.getStringExtra(Constants.ROOM_ID_EXTRA);
         String userId = intent.getStringExtra(Constants.USER_ID_EXTRA);
 
+        initList();
         initUI(roomId, userId);
         initEngineAndJoinRoom(roomId, userId);
-        initGetMessage();
+        initGetMessage(userId);
 
     }
 
-    private void initGetMessage(){
+    private void initGetMessage(String userId){
 
-       /* mVCChatAdapter = new VCChatAdapter();
-        mVCChatRv = findViewById(R.id.voice_chat_demo_main_chat_rv);
+        mVCChatAdapter = new VCChatAdapter();
+        mVCChatRv = (RecyclerView) findViewById(R.id.voice_chat_demo_main_chat_rv);
         // TODO:voice_chat_demo_main_chat_rv
         mVCChatRv.setLayoutManager(new LinearLayoutManager(
                 RTCRoomActivity.this, RecyclerView.VERTICAL, false));
@@ -225,7 +230,9 @@ public class RTCRoomActivity extends AppCompatActivity {
         textViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mRTCRoom.sendRoomMessage(textView.getText().toString());
+                String MESSAGE = textView.getText().toString();
+                mRTCRoom.sendRoomMessage(MESSAGE);
+                mVCChatAdapter.addChatMsg(userId + ": " + MESSAGE);
                 textView.setText("");
             }
         });
@@ -408,5 +415,10 @@ public class RTCRoomActivity extends AppCompatActivity {
         mRTCVideo = null;
     }
 
+    private void initList() {
+        for(int i = 1; i <= 10; i++) {
+            itemList.add(String.valueOf(i));
+        }
+    }
 
 }
