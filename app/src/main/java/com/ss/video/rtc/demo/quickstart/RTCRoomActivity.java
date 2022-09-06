@@ -588,6 +588,13 @@ public class RTCRoomActivity extends AppCompatActivity {
 
     public void OutSendMessage(){
         mHandler.sendMessage(Message.obtain(mHandler, 1));
+        closeInput();
     }
 
+    public void closeInput() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 }
