@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -23,30 +22,21 @@ import com.ss.bytertc.engine.RTCEngine;
 import com.ss.bytertc.engine.RTCRoom;
 import com.ss.bytertc.engine.VideoCanvas;
 import com.ss.bytertc.engine.RTCRoomConfig;
-import com.ss.bytertc.engine.RTCStream;
 import com.ss.bytertc.engine.RTCVideo;
-import com.ss.bytertc.engine.SubscribeConfig;
 import com.ss.bytertc.engine.UserInfo;
-import com.ss.bytertc.engine.VideoCanvas;
 import com.ss.bytertc.engine.VideoEncoderConfig;
-import com.ss.bytertc.engine.data.AVSyncState;
 import com.ss.bytertc.engine.data.AudioRoute;
 import com.ss.bytertc.engine.data.CameraId;
 import com.ss.bytertc.engine.data.RemoteStreamKey;
 import com.ss.bytertc.engine.data.StreamIndex;
 import com.ss.bytertc.engine.data.VideoFrameInfo;
 import com.ss.bytertc.engine.handler.IRTCEngineEventHandler;
-import com.ss.bytertc.engine.handler.IRTCRoomEventHandler;
 import com.ss.bytertc.engine.handler.IRTCVideoEventHandler;
 import com.ss.bytertc.engine.type.ChannelProfile;
-import com.ss.bytertc.engine.type.LocalStreamStats;
 import com.ss.bytertc.engine.type.MediaStreamType;
 import com.ss.bytertc.engine.type.RTCRoomStats;
-import com.ss.bytertc.engine.type.RemoteStreamStats;
-import com.ss.bytertc.engine.type.StreamRemoveReason;
 import com.ss.rtc.demo.quickstart.R;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -119,16 +109,24 @@ public class RTCRoomActivity extends AppCompatActivity {
     private RTCRoomEventHandlerAdapter mIRtcRoomEventHandler = new RTCRoomEventHandlerAdapter() {
 
         @Override
+        public void onRoomStats(RTCRoomStats stats) {
+            super.onRoomStats(stats);
+            Log.d("lfyroomMember", String.valueOf(stats.users));
+        }
+
+
+        @Override
         public void onRoomMessageSendResult(long msgid, int error) {
             super.onRoomMessageSendResult(msgid, error);
-            Log.d("sendMessageID", String.valueOf(msgid));
-            Log.d("SendMessageResult", String.valueOf(error));
+            Log.d("lfysendMessageID", String.valueOf(msgid));
+            Log.d("lfySendMessageResult", String.valueOf(error));
         }
 
         @Override
-        public void onUserMessageReceived(String uid, String message) {
+        public void onRoomMessageReceived(String uid, String message) {
             super.onUserMessageReceived(uid, message);
-            Log.d("UserMessageRecevied", uid + " " + message);
+            Log.d("lfyUserMessageRecevied", uid + " " + message);
+            mVCChatAdapter.addChatMsg(uid + ": " + message);
         }
 
         /**
@@ -154,8 +152,8 @@ public class RTCRoomActivity extends AppCompatActivity {
         @Override
         public void onRoomStateChanged(String roomId, String uid, int state, String extraInfo){
             super.onRoomStateChanged(roomId, uid, state, extraInfo);
-            Log.d("RoomStateUid", uid);
-            Log.d("RoomState", String.valueOf(state));
+            Log.d("lfyRoomStateUid", uid);
+            Log.d("lfyRoomState", String.valueOf(state));
         }
 
     };
@@ -190,6 +188,7 @@ public class RTCRoomActivity extends AppCompatActivity {
             Log.d("IRTCVideoEventHandler", "onError: " + err);
             showAlertDialog(String.format(Locale.US, "error: %d", err));
         }
+
     };
 
     private RecyclerView mVCChatRv;
@@ -218,7 +217,6 @@ public class RTCRoomActivity extends AppCompatActivity {
 
         mVCChatAdapter = new VCChatAdapter();
         mVCChatRv = (RecyclerView) findViewById(R.id.voice_chat_demo_main_chat_rv);
-        // TODO:voice_chat_demo_main_chat_rv
         mVCChatRv.setLayoutManager(new LinearLayoutManager(
                 RTCRoomActivity.this, RecyclerView.VERTICAL, false));
         mVCChatRv.setAdapter(mVCChatAdapter);
@@ -234,6 +232,7 @@ public class RTCRoomActivity extends AppCompatActivity {
                 mRTCRoom.sendRoomMessage(MESSAGE);
                 mVCChatAdapter.addChatMsg(userId + ": " + MESSAGE);
                 textView.setText("");
+//                if(mVCChatAdapter.getItemCount() > 6) mVCChatRv.smoothScrollToPosition(mVCChatAdapter.getItemCount()-1);
             }
         });
     }

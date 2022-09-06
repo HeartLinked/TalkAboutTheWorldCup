@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class VCChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    // TODO: hint
     private final List<String> mMsgList = new LinkedList<>();
 
     @NonNull
