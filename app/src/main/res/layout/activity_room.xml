@@ -87,14 +87,26 @@
 
     <FrameLayout
         android:id="@+id/self_video_container"
-        android:layout_width="270dp"
-        android:layout_height="500dp"
+        android:layout_width="265dp"
+        android:layout_height="272dp"
         android:background="@drawable/radius"
         app:layout_constraintBottom_toTopOf="@+id/voice_chat_demo_main_input_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_bar"
-        />
+        app:layout_constraintVertical_bias="0.047" />
+
+    <FrameLayout
+        android:id="@+id/remote_video_0_container"
+        android:layout_width="266dp"
+        android:layout_height="210dp"
+        android:background="@drawable/radius"
+        app:layout_constraintBottom_toTopOf="@+id/voice_chat_demo_main_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/self_video_container"
+        app:layout_constraintVertical_bias="0.863" />
 
     <TextView
         android:id="@+id/self_video_user_id_tv"

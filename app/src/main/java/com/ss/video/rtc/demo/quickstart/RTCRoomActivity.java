@@ -120,9 +120,9 @@ public class RTCRoomActivity extends AppCompatActivity {
     private CameraId mCameraID = CameraId.CAMERA_ID_FRONT;
 
     private FrameLayout mSelfContainer;
-    private final FrameLayout[] mRemoteContainerArray = new FrameLayout[3];
-    private final TextView[] mUserIdTvArray = new TextView[3];
-    private final String[] mShowUidArray = new String[3];
+    private final FrameLayout[] mRemoteContainerArray = new FrameLayout[1];
+    private final TextView[] mUserIdTvArray = new TextView[1];
+    private final String[] mShowUidArray = new String[1];
 
 
     private RTCVideo mRTCVideo;
@@ -154,26 +154,25 @@ public class RTCRoomActivity extends AppCompatActivity {
         public void onUserLeave(String uid, int reason) {
             super.onUserLeave(uid, reason);
             Log.d("IRTCRoomEventHandler", "onUserLeave: " + uid);
-            //runOnUiThread(() -> removeRemoteView(uid));
+            runOnUiThread(() -> removeRemoteView(uid));
         }
 
     };
 
     private IRTCVideoEventHandler mIRtcVideoEventHandler = new IRTCVideoEventHandler() {
 
-        /*
         @Override
         public void onVideoDeviceStateChanged(String deviceId, VideoDeviceType deviceType, int deviceState, int deviceError) {
             if (deviceType == VideoDeviceType.VIDEO_DEVICE_TYPE_SCREEN_CAPTURE_DEVICE) {
                 if (deviceState == MediaDeviceState.MEDIA_DEVICE_STATE_STARTED) {
-                    mRTCVideo.publishScreen(RTCEngine.MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
+                    mRTCRoom.publishScreen(MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
                     mRTCVideo.setVideoSourceType(StreamIndex.STREAM_INDEX_SCREEN, VideoSourceType.VIDEO_SOURCE_TYPE_INTERNAL);
                 } else if (deviceState == MediaDeviceState.MEDIA_DEVICE_STATE_STOPPED
                         || deviceState == MediaDeviceState.MEDIA_DEVICE_STATE_RUNTIMEERROR) {
-                    mRTCVideo.unpublishScreen(RTCEngine.MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
+                    mRTCRoom.unpublishScreen(MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
                 }
             }
-        }*/
+        }
 
         /**
          * SDK收到第一帧远端视频解码数据后，用户收到此回调。
@@ -182,7 +181,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         public void onFirstRemoteVideoFrameDecoded(RemoteStreamKey remoteStreamKey, VideoFrameInfo frameInfo) {
             super.onFirstRemoteVideoFrameDecoded(remoteStreamKey, frameInfo);
             Log.d("IRTCVideoEventHandler", "onFirstRemoteVideoFrame: " + remoteStreamKey.toString());
-            //runOnUiThread(() -> setRemoteView(remoteStreamKey.getRoomId(), remoteStreamKey.getUserId()));
+            runOnUiThread(() -> setRemoteView(remoteStreamKey.getRoomId(), remoteStreamKey.getUserId()));
         }
 
         /**
@@ -287,8 +286,9 @@ public class RTCRoomActivity extends AppCompatActivity {
 
     private void initUI(String roomId, String userId) {
         mSelfContainer = findViewById(R.id.self_video_container);
-        /*
+
         mRemoteContainerArray[0] = findViewById(R.id.remote_video_0_container);
+        /*
         mRemoteContainerArray[1] = findViewById(R.id.remote_video_1_container);
         mRemoteContainerArray[2] = findViewById(R.id.remote_video_2_container);
         mUserIdTvArray[0] = findViewById(R.id.remote_video_0_user_id_tv);
@@ -363,10 +363,10 @@ public class RTCRoomActivity extends AppCompatActivity {
         videoCanvas.renderView = renderView;
         videoCanvas.roomId = roomId;
         videoCanvas.uid = uid;
-        videoCanvas.isScreen = false;
+        videoCanvas.isScreen = true;
         videoCanvas.renderMode = VideoCanvas.RENDER_MODE_HIDDEN;
         // 设置远端用户视频渲染视图
-        mRTCVideo.setRemoteVideoCanvas(uid, StreamIndex.STREAM_INDEX_MAIN, videoCanvas);
+        mRTCVideo.setRemoteVideoCanvas(uid, StreamIndex.STREAM_INDEX_SCREEN, videoCanvas);
     }
 
     private void setRemoteView(String roomId, String uid) {
@@ -382,7 +382,7 @@ public class RTCRoomActivity extends AppCompatActivity {
             return;
         }
         mShowUidArray[emptyInx] = uid;
-        mUserIdTvArray[emptyInx].setText(String.format("UserId:%s", uid));
+        //mUserIdTvArray[emptyInx].setText(String.format("UserId:%s", uid));
         setRemoteRenderView(roomId, uid, mRemoteContainerArray[emptyInx]);
     }
 
@@ -390,7 +390,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         for (int i = 0; i < mShowUidArray.length; i++) {
             if (TextUtils.equals(uid, mShowUidArray[i])) {
                 mShowUidArray[i] = null;
-                mUserIdTvArray[i].setText(null);
+                //mUserIdTvArray[i].setText(null);
                 mRemoteContainerArray[i].removeAllViews();
             }
         }
