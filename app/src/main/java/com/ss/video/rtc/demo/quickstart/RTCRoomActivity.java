@@ -6,11 +6,16 @@ import android.content.Intent;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -52,6 +57,8 @@ import org.webrtc.RXScreenCaptureService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * VolcEngineRTC 视频通话的主页面
@@ -122,6 +129,10 @@ public class RTCRoomActivity extends AppCompatActivity {
     private RTCVideo mRTCVideo;
     private RTCRoom mRTCRoom;
 
+    private Timer timer;
+    private boolean Start;
+    private int cnt;
+
     public static final int REQUEST_CODE_OF_SCREEN_SHARING = 101;
 
     private RTCRoomEventHandlerAdapter mIRtcRoomEventHandler = new RTCRoomEventHandlerAdapter() {
@@ -132,10 +143,13 @@ public class RTCRoomActivity extends AppCompatActivity {
             Log.d("lfyroomMember", String.valueOf(stats.users));
         }
 
-
         @Override
         public void onRoomMessageSendResult(long msgid, int error) {
             super.onRoomMessageSendResult(msgid, error);
+            mHandler.sendMessage(Message.obtain(mHandler, 1));
+
+            mVCChatRv.smoothScrollToPosition(mVCChatAdapter.getItemCount()- 1);
+
             Log.d("lfysendMessageID", String.valueOf(msgid));
             Log.d("lfySendMessageResult", String.valueOf(error));
         }
@@ -143,8 +157,9 @@ public class RTCRoomActivity extends AppCompatActivity {
         @Override
         public void onRoomMessageReceived(String uid, String message) {
             super.onUserMessageReceived(uid, message);
-            Log.d("lfyUserMessageRecevied", uid + " " + message);
+            mHandler.sendMessage(Message.obtain(mHandler, 1));
             mVCChatAdapter.addChatMsg(uid + ": " + message);
+            Log.d("lfyUserMessageRecevied", uid + " " + message);
         }
 
         /**
@@ -296,6 +311,61 @@ public class RTCRoomActivity extends AppCompatActivity {
         }
     }
 
+    void setInvisible() {
+        AlphaAnimation disappearAnimation = new AlphaAnimation(1, 0);
+        disappearAnimation.setDuration(500);
+        mVCChatRv.startAnimation(disappearAnimation);
+        disappearAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mVCChatRv.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    final Handler mHandler = new Handler(){
+
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 1) {
+                mVCChatRv.setVisibility(View.VISIBLE);
+                cnt = 10;
+                if(Start == true) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if(cnt <= 0) {
+                                if(mVCChatRv.getVisibility() == View.VISIBLE) setInvisible();
+                            } else cnt--;
+                            Log.d("lfycnt", String.valueOf(cnt));
+                        }
+                    }, 0, 1000);
+                } else {
+                    Start = true;
+                    timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if(cnt <= 0) {
+                                if(mVCChatRv.getVisibility() == View.VISIBLE) setInvisible();
+                            } else cnt--;
+                            Log.d("lfycnt", String.valueOf(cnt));
+                        }
+                    }, 0, 1000);
+                }
+            }
+        }
+    };
+
     private void initGetMessage(String userId){
 
         mVCChatAdapter = new VCChatAdapter();
@@ -303,7 +373,14 @@ public class RTCRoomActivity extends AppCompatActivity {
         mVCChatRv.setLayoutManager(new LinearLayoutManager(
                 RTCRoomActivity.this, RecyclerView.VERTICAL, false));
         mVCChatRv.setAdapter(mVCChatAdapter);
-//        mVCChatRv.setOnClickListener((v) -> closeInput());*/
+        cnt = 10;
+
+        mVCChatRv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mHandler.sendMessage(Message.obtain(mHandler, 1));
+            }
+        });
 
         TextView textViewButton = findViewById(R.id.voice_chat_demo_main_input_send);
         EditText textView = findViewById(R.id.voice_chat_demo_main_input_et);
@@ -319,6 +396,7 @@ public class RTCRoomActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void initUI(String roomId, String userId) {
         mSelfContainer = findViewById(R.id.self_video_container);
@@ -506,6 +584,10 @@ public class RTCRoomActivity extends AppCompatActivity {
         for(int i = 1; i <= 10; i++) {
             itemList.add(String.valueOf(i));
         }
+    }
+
+    public void OutSendMessage(){
+        mHandler.sendMessage(Message.obtain(mHandler, 1));
     }
 
 }

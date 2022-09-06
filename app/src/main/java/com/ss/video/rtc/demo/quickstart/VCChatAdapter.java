@@ -1,5 +1,6 @@
 package com.ss.video.rtc.demo.quickstart;
 
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,13 @@ public class VCChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VCChatViewHolder) {
             ((VCChatViewHolder) holder).bind(mMsgList.get(position));
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RTCRoomActivity rtcRoomActivity = (RTCRoomActivity) view.getContext();
+                    rtcRoomActivity.OutSendMessage();
+                }
+            });
         }
     }
 

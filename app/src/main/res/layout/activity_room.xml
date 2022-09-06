@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@drawable/back1"
     tools:context="com.ss.video.rtc.demo.quickstart.RTCRoomActivity"
     tools:ignore="ContentDescription,RtlHardcoded,SpUsage">
 
@@ -121,6 +121,8 @@
             android:id="@+id/voice_chat_demo_main_chat_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:layout_constraintHeight_max="270dp"
+            app:layout_constraintHeight_default="wrap"
             android:layout_marginHorizontal="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintBottom_toTopOf="@id/voice_chat_demo_main_input_layout"
