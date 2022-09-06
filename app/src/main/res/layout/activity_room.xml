@@ -105,6 +105,15 @@
         app:layout_constraintBottom_toBottomOf="@id/self_video_container"
         app:layout_constraintRight_toRightOf="@id/self_video_container" />
 
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/voice_chat_demo_main_chat_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/voice_chat_demo_main_input_layout"
+            tools:listitem="@layout/item_voice_chat_demo_chat" />
+
 
 <!--
     <FrameLayout
