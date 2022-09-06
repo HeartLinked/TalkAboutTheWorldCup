@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ss.bytertc.engine.RTCEngine;
 import com.ss.bytertc.engine.RTCRoom;
@@ -110,7 +112,6 @@ public class RTCRoomActivity extends AppCompatActivity {
     private final TextView[] mUserIdTvArray = new TextView[3];
     private final String[] mShowUidArray = new String[3];
 
-
     private RTCVideo mRTCVideo;
     private RTCRoom mRTCRoom;
 
@@ -190,6 +191,9 @@ public class RTCRoomActivity extends AppCompatActivity {
         }
     };
 
+    private RecyclerView mVCChatRv;
+    private VCChatAdapter mVCChatAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,6 +210,14 @@ public class RTCRoomActivity extends AppCompatActivity {
     }
 
     private void initGetMessage(){
+
+       /* mVCChatAdapter = new VCChatAdapter();
+        mVCChatRv = findViewById(R.id.voice_chat_demo_main_chat_rv);
+        // TODO:voice_chat_demo_main_chat_rv
+        mVCChatRv.setLayoutManager(new LinearLayoutManager(
+                RTCRoomActivity.this, RecyclerView.VERTICAL, false));
+        mVCChatRv.setAdapter(mVCChatAdapter);
+//        mVCChatRv.setOnClickListener((v) -> closeInput());*/
 
         TextView textViewButton = findViewById(R.id.voice_chat_demo_main_input_send);
         EditText textView = findViewById(R.id.voice_chat_demo_main_input_et);

@@ -20,7 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MinimRTCDemo">
         <activity android:name="com.ss.video.rtc.demo.quickstart.LoginActivity"
-            android:screenOrientation="portrait">
+                android:windowSoftInputMode="adjustResize"
+                android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,6 +29,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.ss.video.rtc.demo.quickstart.RTCRoomActivity"
+                android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"/>
     </application>
