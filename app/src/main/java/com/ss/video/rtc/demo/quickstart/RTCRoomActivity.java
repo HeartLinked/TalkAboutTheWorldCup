@@ -20,18 +20,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ss.bytertc.engine.RTCEngine;
 import com.ss.bytertc.engine.RTCRoom;
 import com.ss.bytertc.engine.VideoCanvas;
 import com.ss.bytertc.engine.RTCRoomConfig;
-import com.ss.bytertc.engine.RTCStream;
 import com.ss.bytertc.engine.RTCVideo;
-import com.ss.bytertc.engine.SubscribeConfig;
 import com.ss.bytertc.engine.UserInfo;
-import com.ss.bytertc.engine.VideoCanvas;
 import com.ss.bytertc.engine.VideoEncoderConfig;
-import com.ss.bytertc.engine.data.AVSyncState;
 import com.ss.bytertc.engine.data.AudioRoute;
 import com.ss.bytertc.engine.data.CameraId;
 import com.ss.bytertc.engine.data.RemoteStreamKey;
@@ -40,21 +38,18 @@ import com.ss.bytertc.engine.data.StreamIndex;
 import com.ss.bytertc.engine.data.VideoFrameInfo;
 import com.ss.bytertc.engine.data.VideoSourceType;
 import com.ss.bytertc.engine.handler.IRTCEngineEventHandler;
-import com.ss.bytertc.engine.handler.IRTCRoomEventHandler;
 import com.ss.bytertc.engine.handler.IRTCVideoEventHandler;
 import com.ss.bytertc.engine.type.ChannelProfile;
-import com.ss.bytertc.engine.type.LocalStreamStats;
 import com.ss.bytertc.engine.type.MediaDeviceState;
 import com.ss.bytertc.engine.type.MediaStreamType;
 import com.ss.bytertc.engine.type.RTCRoomStats;
-import com.ss.bytertc.engine.type.RemoteStreamStats;
-import com.ss.bytertc.engine.type.StreamRemoveReason;
+
 import com.ss.bytertc.engine.type.VideoDeviceType;
 import com.ss.rtc.demo.quickstart.R;
 
 import org.webrtc.RXScreenCaptureService;
 
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -124,7 +119,6 @@ public class RTCRoomActivity extends AppCompatActivity {
     private final TextView[] mUserIdTvArray = new TextView[1];
     private final String[] mShowUidArray = new String[1];
 
-
     private RTCVideo mRTCVideo;
     private RTCRoom mRTCRoom;
 
@@ -133,9 +127,24 @@ public class RTCRoomActivity extends AppCompatActivity {
     private RTCRoomEventHandlerAdapter mIRtcRoomEventHandler = new RTCRoomEventHandlerAdapter() {
 
         @Override
-        public void onUserMessageReceived(String uid, String message) {
+        public void onRoomStats(RTCRoomStats stats) {
+            super.onRoomStats(stats);
+            Log.d("lfyroomMember", String.valueOf(stats.users));
+        }
+
+
+        @Override
+        public void onRoomMessageSendResult(long msgid, int error) {
+            super.onRoomMessageSendResult(msgid, error);
+            Log.d("lfysendMessageID", String.valueOf(msgid));
+            Log.d("lfySendMessageResult", String.valueOf(error));
+        }
+
+        @Override
+        public void onRoomMessageReceived(String uid, String message) {
             super.onUserMessageReceived(uid, message);
-            Log.d("UserMessageRecevied", uid + " " + message);
+            Log.d("lfyUserMessageRecevied", uid + " " + message);
+            mVCChatAdapter.addChatMsg(uid + ": " + message);
         }
 
         /**
@@ -155,6 +164,13 @@ public class RTCRoomActivity extends AppCompatActivity {
             super.onUserLeave(uid, reason);
             Log.d("IRTCRoomEventHandler", "onUserLeave: " + uid);
             runOnUiThread(() -> removeRemoteView(uid));
+        }
+
+        @Override
+        public void onRoomStateChanged(String roomId, String uid, int state, String extraInfo){
+            super.onRoomStateChanged(roomId, uid, state, extraInfo);
+            Log.d("lfyRoomStateUid", uid);
+            Log.d("lfyRoomState", String.valueOf(state));
         }
 
     };
@@ -202,7 +218,14 @@ public class RTCRoomActivity extends AppCompatActivity {
             Log.d("IRTCVideoEventHandler", "onError: " + err);
             showAlertDialog(String.format(Locale.US, "error: %d", err));
         }
+
     };
+
+    private RecyclerView mVCChatRv;
+
+    private List<String> itemList = new ArrayList<>();
+
+    private VCChatAdapter mVCChatAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,9 +236,10 @@ public class RTCRoomActivity extends AppCompatActivity {
         String roomId = intent.getStringExtra(Constants.ROOM_ID_EXTRA);
         String userId = intent.getStringExtra(Constants.USER_ID_EXTRA);
 
+        initList();
         initUI(roomId, userId);
         initEngineAndJoinRoom(roomId, userId);
-        initGetMessage();
+        initGetMessage(userId);
 
         requestForScreenSharing();
     }
@@ -272,14 +296,26 @@ public class RTCRoomActivity extends AppCompatActivity {
         }
     }
 
-    private void initGetMessage(){
+    private void initGetMessage(String userId){
+
+        mVCChatAdapter = new VCChatAdapter();
+        mVCChatRv = (RecyclerView) findViewById(R.id.voice_chat_demo_main_chat_rv);
+        mVCChatRv.setLayoutManager(new LinearLayoutManager(
+                RTCRoomActivity.this, RecyclerView.VERTICAL, false));
+        mVCChatRv.setAdapter(mVCChatAdapter);
+//        mVCChatRv.setOnClickListener((v) -> closeInput());*/
+
         TextView textViewButton = findViewById(R.id.voice_chat_demo_main_input_send);
         EditText textView = findViewById(R.id.voice_chat_demo_main_input_et);
-        textView.getText();
+
         textViewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 发送消息
+                String MESSAGE = textView.getText().toString();
+                mRTCRoom.sendRoomMessage(MESSAGE);
+                mVCChatAdapter.addChatMsg(userId + ": " + MESSAGE);
+                textView.setText("");
+//                if(mVCChatAdapter.getItemCount() > 6) mVCChatRv.smoothScrollToPosition(mVCChatAdapter.getItemCount()-1);
             }
         });
     }
@@ -466,5 +502,10 @@ public class RTCRoomActivity extends AppCompatActivity {
         mRTCVideo = null;
     }
 
+    private void initList() {
+        for(int i = 1; i <= 10; i++) {
+            itemList.add(String.valueOf(i));
+        }
+    }
 
 }
