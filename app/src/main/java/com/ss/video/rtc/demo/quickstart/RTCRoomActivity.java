@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -213,6 +214,7 @@ public class RTCRoomActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mRTCRoom.sendRoomMessage(textView.getText().toString());
+                textView.setText("");
             }
         });
     }

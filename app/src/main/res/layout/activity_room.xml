@@ -199,6 +199,10 @@
                 android:text="发送"
                 android:textColor="@color/white"
                 android:textSize="14dp" />
+
+
+
+
     </FrameLayout>
 
 
