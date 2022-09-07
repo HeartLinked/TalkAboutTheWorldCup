@@ -124,7 +124,6 @@
             app:layout_constraintHeight_max="270dp"
             app:layout_constraintHeight_default="wrap"
             android:layout_marginHorizontal="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintBottom_toTopOf="@id/voice_chat_demo_main_input_layout"
             tools:listitem="@layout/item_voice_chat_demo_chat" />
 
