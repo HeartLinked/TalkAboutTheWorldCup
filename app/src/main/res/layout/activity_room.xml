@@ -27,6 +27,15 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/self_video_container" />
 
+        <ImageView
+            android:id="@+id/leave"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/leave"
+            android:layout_marginRight="80dp"
+            android:layout_gravity="center"
+            />
+
         <TextView
             android:id="@+id/room_id_text"
             android:layout_width="wrap_content"
@@ -71,15 +80,16 @@
             />
 
         <ImageView
-            android:id="@+id/switch_local_audio"
+            android:id="@+id/choose_video"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
             android:layout_marginRight="80dp"
-            android:src="@drawable/video" />
+            android:src="@drawable/video"
+            />
 
         <ImageView
-            android:id="@+id/switch_local_audio"
+            android:id="@+id/start_share"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
@@ -102,17 +112,7 @@
             android:src="@drawable/normal_video" />
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/self_video_container"
-        android:layout_width="270dp"
-        android:layout_height="300dp"
-        android:background="@drawable/radius"
-        app:layout_constraintBottom_toTopOf="@+id/voice_chat_demo_main_input_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar"
-        app:layout_constraintVertical_bias="0.047" />
-
+    <!--
     <FrameLayout
         android:id="@+id/remote_video_0_container"
         android:layout_width="266dp"
@@ -123,7 +123,19 @@
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/self_video_container"
-        app:layout_constraintVertical_bias="0.863" />
+        app:layout_constraintVertical_bias="0.863" />-->
+
+    <FrameLayout
+        android:id="@+id/self_video_container"
+        android:layout_width="270dp"
+        android:layout_height="500dp"
+        android:background="@drawable/radius"
+        app:layout_constraintBottom_toTopOf="@+id/voice_chat_demo_main_input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.609"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        app:layout_constraintVertical_bias="0.637" />
 
     <TextView
         android:id="@+id/self_video_user_id_tv"
