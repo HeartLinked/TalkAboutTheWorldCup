@@ -361,7 +361,7 @@ public class RTCRoomActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mVCChatRv.setVisibility(View.GONE);
+                mVCChatRv.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -412,7 +412,8 @@ public class RTCRoomActivity extends AppCompatActivity {
         mVCChatRv.setAdapter(mVCChatAdapter);
         cnt = 10;
 
-        mVCChatRv.setOnClickListener(new View.OnClickListener() {
+        View view = findViewById(R.id.review);
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mHandler.sendMessage(Message.obtain(mHandler, 1));
@@ -433,7 +434,6 @@ public class RTCRoomActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void initUI(String roomId, String userId) {
         chooseVideo = findViewById(R.id.choose_video);
@@ -662,13 +662,6 @@ public class RTCRoomActivity extends AppCompatActivity {
 
     public void OutSendMessage(){
         mHandler.sendMessage(Message.obtain(mHandler, 1));
-        closeInput();
     }
 
-    public void closeInput() {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
 }
