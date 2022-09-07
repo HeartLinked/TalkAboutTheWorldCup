@@ -67,7 +67,24 @@
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
-            android:src="@drawable/normal_audio" />
+            android:src="@drawable/normal_audio"
+            />
+
+        <ImageView
+            android:id="@+id/switch_local_audio"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="80dp"
+            android:src="@drawable/video" />
+
+        <ImageView
+            android:id="@+id/switch_local_audio"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="80dp"
+            android:src="@drawable/share" />
 
         <ImageView
             android:id="@+id/hang_up"
