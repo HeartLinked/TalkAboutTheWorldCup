@@ -605,28 +605,6 @@ public class RTCRoomActivity extends AppCompatActivity {
         });
     }
 
-    private void renderSubView(String uid,FrameLayout container) {
-        Log.d("msg","renderSubView start");
-        TextureView renderView = new TextureView(this);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        );
-        container.removeAllViews();
-        container.addView(renderView, params);
-        Log.d("msg","renderSubView add view");
-
-        VideoCanvas videoCanvas = new VideoCanvas();
-        videoCanvas.renderView = renderView;
-        videoCanvas.roomId = localRoomId;
-        videoCanvas.uid = uid;
-        videoCanvas.isScreen = false;
-        videoCanvas.renderMode = VideoCanvas.RENDER_MODE_HIDDEN;
-        // 设置远端用户视频渲染视图
-        int res = mRTCVideo.setRemoteVideoCanvas(uid, StreamIndex.STREAM_INDEX_MAIN, videoCanvas);
-        Log.d("msg","renderSubView res " +res);
-    }
-
     @Override
     public void finish() {
         super.finish();
