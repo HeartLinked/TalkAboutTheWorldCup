@@ -11,6 +11,7 @@
         android:paddingTop="5dp"
         android:paddingRight="16dp"
         android:paddingBottom="5dp"
-        android:textColor="@color/white"
+        android:textColor="@color/blue"
         android:textSize="14dp"
+        android:textStyle="bold"
         tools:text="Cici 进入了房间" />
