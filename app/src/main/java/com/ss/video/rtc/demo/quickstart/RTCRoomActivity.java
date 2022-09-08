@@ -126,6 +126,10 @@ public class RTCRoomActivity extends AppCompatActivity {
     private boolean isPublishScreen = false;//本地是否在publish screen
     private boolean isPublishStream = false;//本地是否在publish stream
 
+    private String[] remoteUserIds = new String[100];
+    private FrameLayout[] remoteUserContainer = new FrameLayout[100];
+    private int remoteUserPtr = 0;
+
     private FrameLayout rootRemoteContainer;
     private String localRoomId;
 
@@ -252,7 +256,24 @@ public class RTCRoomActivity extends AppCompatActivity {
                 runOnUiThread(() -> setLocalRenderView(remoteStreamKey.getUserId(),remoteStreamKey.getRoomId()));
                 Log.d("msg","onFirstRemoteVideoFrameDecoded stream type = STREAM_INDEX_SCREEN");
             } else {
-                runOnUiThread(() -> setRemoteRenderView(remoteStreamKey.getUserId(),remoteStreamKey.getRoomId(),rootRemoteContainer));
+                boolean ifFindFlag = false;
+                for(int index=0;index<remoteUserPtr;index++) {
+                    if(remoteUserIds[index].equals(remoteStreamKey.getUserId())) {
+                        Log.d("msg","render index : "+index);
+                        FrameLayout container = remoteUserContainer[index];
+                        runOnUiThread(() -> setRemoteRenderView(remoteStreamKey.getUserId(),remoteStreamKey.getRoomId(),container));
+                        ifFindFlag = true;
+                        break;
+                    }
+                }
+                if(ifFindFlag == false) {
+                    Log.d("msg","render index : "+remoteUserPtr);
+                    remoteUserIds[remoteUserPtr] = remoteStreamKey.getUserId();
+                    FrameLayout container = remoteUserContainer[remoteUserPtr];
+                    runOnUiThread(() -> setRemoteRenderView(remoteStreamKey.getUserId(),remoteStreamKey.getRoomId(),container));
+                    remoteUserPtr++;
+                }
+                // runOnUiThread(() -> setRemoteRenderView(remoteStreamKey.getUserId(),remoteStreamKey.getRoomId(),rootRemoteContainer));
                 Log.d("msg","onFirstRemoteVideoFrameDecoded stream type != STREAM_INDEX_SCREEN");
             }
         }
@@ -295,6 +316,9 @@ public class RTCRoomActivity extends AppCompatActivity {
         localRoomId = intent.getStringExtra(Constants.ROOM_ID_EXTRA);
 
         mSelfContainer = findViewById(R.id.self_video_container);
+        remoteUserContainer[0] = findViewById(R.id.remote_container_root);
+        remoteUserContainer[1] = findViewById(R.id.remote_container_root_1);
+        remoteUserContainer[2] = findViewById(R.id.remote_container_root_2);
 
         initList();
         initUI(roomId, userId);
@@ -479,7 +503,7 @@ public class RTCRoomActivity extends AppCompatActivity {
     private void initUI(String roomId, String userId) {
 
         mSelfContainer = findViewById(R.id.self_video_container);
-        rootRemoteContainer = findViewById(R.id.remote_container_root);
+        //rootRemoteContainer = findViewById(R.id.remote_container_root);
 
         mAudioIv = findViewById(R.id.switch_local_audio);      // 左下角
         mVideoIv = findViewById(R.id.switch_local_video);       // 右下角

@@ -35,7 +35,6 @@
         app:layout_constraintLeft_toRightOf="@id/remote_container_root_1"
         app:layout_constraintBottom_toTopOf="@id/voice_chat_demo_main_input_layout"/>
 
-
 <!--    标题栏 + 左：前后镜头 + 右：声音（听筒/扬声器）-->
     <FrameLayout
         android:id="@+id/title_bar"
