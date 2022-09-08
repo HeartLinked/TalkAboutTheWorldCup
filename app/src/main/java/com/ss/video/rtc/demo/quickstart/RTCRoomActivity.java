@@ -169,6 +169,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         @Override
         public void onUserPublishScreen( String uid, MediaStreamType type) {
             Log.d("msg","User publish screen, uid : "+uid);
+            ifHasMainSharer = true;
             if(currentMainSharerId.equals(uid)) {
                 Log.d("msg","receive main screen share stream");
                 setLocalRenderView(uid,RENDER_SCREEN);
@@ -180,6 +181,7 @@ public class RTCRoomActivity extends AppCompatActivity {
 
         @Override
         public void onUserUnpublishScreen(String uid, MediaStreamType type,StreamRemoveReason reason) {
+            ifHasMainSharer = false;
             Log.d("msg","user un publish screen, uid : "+uid);
             if(currentMainSharerId.equals(uid)) {
                 Log.d("msg","current main screen sharer quit");
@@ -190,12 +192,8 @@ public class RTCRoomActivity extends AppCompatActivity {
 
         @Override
         public void onUserPublishStream( String uid, MediaStreamType type) {
-            if(currentMainSharerId.equals(uid)) {
-                //publish stream过来的是主共享人,直接return,因为主共享人只会publish screen
-            } else {
-                Log.d("msg","user publish stream ,uid : "+uid);
-                renderSubView(uid,rootRemoteContainer);
-            }
+            Log.d("msg","user publish stream ,uid : "+uid);
+            renderSubView(uid,rootRemoteContainer);
         }
 
         @Override
@@ -246,6 +244,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         public void onUserJoined(UserInfo userInfo, int elapsed) {
             super.onUserJoined(userInfo, elapsed);
             Log.d("IRTCRoomEventHandler", "onUserJoined: " + userInfo.getUid());
+            Log.d("msg","remote user join");
         }
 
         /**
@@ -535,7 +534,8 @@ public class RTCRoomActivity extends AppCompatActivity {
         if(sxt) mRTCVideo.startVideoCapture();
         // 开启本地音频采集
         if(mkf) mRTCVideo.startAudioCapture();
-        setLocalRenderView(userId,RENDER_CAMERA);
+
+        //(userId,RENDER_CAMERA);
 
         // 加入房间
         mRTCRoom = mRTCVideo.createRTCRoom(roomId);
@@ -690,11 +690,13 @@ public class RTCRoomActivity extends AppCompatActivity {
     }
 
     private void renderSubView(String uid,FrameLayout container) {
-        VideoView renderView = new VideoView(this);
+        Log.d("msg","renderSubView start");
+        TextureView renderView = new TextureView(this);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        container.removeAllViews();
         container.addView(renderView, params);
         Log.d("msg","renderSubView add view");
 
@@ -754,7 +756,7 @@ public class RTCRoomActivity extends AppCompatActivity {
                                     // 当前无主共享人
                                     Log.d("msg","local user request to be main screen sharer");
                                     mRTCRoom.sendRoomMessage("main");
-                                    ifHasMainSharer = true;
+                                    //ifHasMainSharer = true;
                                     currentMainSharerId = userId;
                                     requestForScreenSharing();
                                 } else {
