@@ -680,11 +680,8 @@ public class RTCRoomActivity extends AppCompatActivity {
                             }
                             case R.id.openVideo:{
                                 if(isPublishScreen) {
-                                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                                    intent.setDataAndType(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, "video/*");
-                                    startActivityForResult(intent, 2);
-                                    // TODO：重写，修改逻辑
-                                    Toast.makeText(RTCRoomActivity.this,"视频打开成功！",Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(RTCRoomActivity.this, MainActivity2.class);
+                                    startActivityForResult(intent, 1);
                                 }  else {
                                     Toast.makeText(RTCRoomActivity.this,"请先共享屏幕",Toast.LENGTH_SHORT).show();
                                 }

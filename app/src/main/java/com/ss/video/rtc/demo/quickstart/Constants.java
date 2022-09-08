@@ -12,10 +12,10 @@ public class Constants {
     //TOKEN 加入房间的时候需要使用token完成鉴权，详情参见{https://www.volcengine.com/docs/6348/70121}
 
     //user id : lfy
-    //public static final String TOKEN = "00163120b429ebfba018975d577PAAoYnQCZDYYY+RwIWMDADEyMwMAbGZ5BgAAAORwIWMBAORwIWMCAORwIWMDAORwIWMEAORwIWMFAORwIWMgALjqqCTtdeHfgifW37AwW0KGCd6PG2osrF9SgNUlXHI5";
+    public static final String TOKEN = "00163120b429ebfba018975d577PAAoYnQCZDYYY+RwIWMDADEyMwMAbGZ5BgAAAORwIWMBAORwIWMCAORwIWMDAORwIWMEAORwIWMFAORwIWMgALjqqCTtdeHfgifW37AwW0KGCd6PG2osrF9SgNUlXHI5";
 
     //user id : thy
-    public static final String TOKEN = "00163120b429ebfba018975d577PABqHOEBTzYYY89wIWMDADEyMwMAdGh5BgAAAM9wIWMBAM9wIWMCAM9wIWMDAM9wIWMEAM9wIWMFAM9wIWMgAPpSFox1o9NLo8RRJIR+Z+BkyJC5l3ZoKj0scEbBBqYK";
+    //public static final String TOKEN = "00163120b429ebfba018975d577PABqHOEBTzYYY89wIWMDADEyMwMAdGh5BgAAAM9wIWMBAM9wIWMCAM9wIWMDAM9wIWMEAM9wIWMFAM9wIWMgAPpSFox1o9NLo8RRJIR+Z+BkyJC5l3ZoKj0scEbBBqYK";
     //INPUT_REGEX SDK 对房间名、用户名的限制是：非空且最大长度不超过128位的数字、大小写字母、@ . _ | -
     public static final String INPUT_REGEX = "^[a-zA-Z0-9@._|-]{1,128}$";
 
