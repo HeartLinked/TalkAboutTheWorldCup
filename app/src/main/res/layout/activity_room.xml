@@ -18,23 +18,38 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/switch_camera"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:src="@drawable/switch_camera"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/self_video_container" />
+                android:id="@+id/amenu"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/yuque_jia"
+                app:layout_constraintLeft_toLeftOf="parent" />
 
         <ImageView
-            android:id="@+id/leave"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/leave"
-            android:layout_marginRight="80dp"
-            android:layout_gravity="center"
-            />
+                android:id="@+id/switch_local_audio"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical|left"
+                android:layout_marginLeft="75dp"
+                android:src="@drawable/normal_audio"
+                />
+
+        <ImageView
+                android:id="@+id/switch_local_video"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical|right"
+                android:layout_marginRight="75dp"
+                android:src="@drawable/normal_video" />
+
+        <ImageView
+                android:id="@+id/leave"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/leave"
+                android:layout_marginRight="16dp"
+                android:layout_gravity="center|right" />
 
         <TextView
             android:id="@+id/room_id_text"
@@ -50,92 +65,21 @@
             android:textSize="18dp"
             tools:text="ID:userid" />
 
-        <ImageView
-            android:id="@+id/switch_audio_router"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/speaker_on"
-            app:layout_constraintLeft_toRightOf="@id/switch_camera"
-            app:layout_constraintTop_toBottomOf="@id/self_video_container" />
     </FrameLayout>
 
     <!--    底边 + 左：麦克风开关 + 退出房间开关 + 右：视频开关-->
-    <FrameLayout
-        android:id="@+id/self_video_container"
-        android:layout_width="317dp"
-        android:layout_height="498dp"
-        android:background="@drawable/radius"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.638"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar"
-        app:layout_constraintVertical_bias="0.18" />
 
     <FrameLayout
-        android:id="@+id/bottom_bar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/white"
-        android:paddingBottom="10dp"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <ImageView
-            android:id="@+id/switch_local_audio"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
-            android:src="@drawable/normal_audio"
-            />
-
-        <ImageView
-            android:id="@+id/choose_video"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:layout_marginRight="80dp"
-            android:src="@drawable/video"
-            />
-
-        <ImageView
-            android:id="@+id/start_share"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="80dp"
-            android:src="@drawable/share" />
-
-        <ImageView
-            android:id="@+id/hang_up"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center"
-            android:src="@drawable/hang_up" />
-
-        <ImageView
-            android:id="@+id/switch_local_video"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/normal_video" />
-    </FrameLayout>
-
-    <!--
-    <FrameLayout
-        android:id="@+id/remote_video_0_container"
-        android:layout_width="266dp"
-        android:layout_height="210dp"
-        android:background="@drawable/radius"
-        app:layout_constraintBottom_toTopOf="@+id/voice_chat_demo_main_input_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/self_video_container"
-        app:layout_constraintVertical_bias="0.863" />-->
+            android:id="@+id/self_video_container"
+            android:layout_width="317dp"
+            android:layout_height="498dp"
+            android:background="@drawable/radius"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.638"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_bar"
+            app:layout_constraintVertical_bias="0.076" />
 
 
     <TextView
@@ -230,7 +174,7 @@
             android:background="#F20E0825"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@id/bottom_bar">
+            app:layout_constraintBottom_toBottomOf="parent">
 
         <EditText
                 android:id="@+id/voice_chat_demo_main_input_et"

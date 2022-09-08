@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/shareScreen"
+            android:title="开始投屏"  />
+
+    <item
+            android:id="@+id/shareScreen2"
+            android:title="关闭投屏"  />
+
+    <item
+            android:id="@+id/openVideo"
+            android:title="打开本地视频"
+            android:icon="@drawable/video"/>
+
+    <item
+            android:id="@+id/listener1"
+            android:title="切换听筒 / 扬声器"/>
+
+    <item
+            android:id="@+id/swithcamera"
+            android:title="切换前置 / 后置摄像头"/>
+
+</menu>

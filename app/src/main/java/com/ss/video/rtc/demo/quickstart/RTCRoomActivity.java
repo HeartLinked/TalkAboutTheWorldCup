@@ -1,5 +1,6 @@
 package com.ss.video.rtc.demo.quickstart;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,8 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -29,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,6 +64,8 @@ import com.ss.rtc.demo.quickstart.R;
 
 import org.webrtc.RXScreenCaptureService;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -296,9 +303,13 @@ public class RTCRoomActivity extends AppCompatActivity {
 
         initList();
         initUI(roomId, userId);
-        initEngineAndJoinRoom(roomId, userId);
-        initGetMessage(userId);
+        setMenu(userId);
 
+        Boolean sxt = intent.getBooleanExtra("sxt", false);
+        Boolean mkf = intent.getBooleanExtra("mkf", false);
+
+        initEngineAndJoinRoom(roomId, userId, sxt, mkf);
+        initGetMessage(userId);
         //requestForScreenSharing();
     }
 
@@ -458,58 +469,9 @@ public class RTCRoomActivity extends AppCompatActivity {
     }
 
     private void initUI(String roomId, String userId) {
-        chooseVideo = findViewById(R.id.choose_video);
-        startShare = findViewById(R.id.start_share);
-        stopSharing = findViewById(R.id.hang_up);
-        startShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(ifHasMainSharer == false) {
-                    // 当前无主共享人
-                    Log.d("msg","local user request to be main screen sharer");
-                    mRTCRoom.sendRoomMessage("main");
-                    ifHasMainSharer = true;
-                    currentMainSharerId = userId;
-                    requestForScreenSharing();
-                } else {
-                    Log.d("msg","request to be main screen sharer fail, current main sharer id : "+currentMainSharerId);
-                    Toast.makeText(RTCRoomActivity.this,"已经有共享人了!",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        chooseVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(currentMainSharerId == userId) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                    intent.setDataAndType(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, "video/*");
-                    startActivityForResult(intent, 2);
-                }   else {
-                    Toast.makeText(RTCRoomActivity.this,"请先共享屏幕",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        stopSharing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(currentMainSharerId == userId) {
-                    //如果用户是主共享人的话停止共享
-                    Log.d("msg","local main screen sharer stop sharing");
-                    mRTCRoom.unpublishScreen(MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
-                    mRTCVideo.stopScreenCapture();
-                    mSelfContainer.removeAllViews();
-                    ifHasMainSharer = false;
-                    currentMainSharerId = "";
-                } else {
-                    Toast.makeText(RTCRoomActivity.this,"请先共享屏幕",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
 
         mSelfContainer = findViewById(R.id.self_video_container);
 
-        //mRemoteContainerArray[0] = findViewById(R.id.remote_video_0_container);
         /*
         mRemoteContainerArray[1] = findViewById(R.id.remote_video_1_container);
         mRemoteContainerArray[2] = findViewById(R.id.remote_video_2_container);
@@ -517,13 +479,10 @@ public class RTCRoomActivity extends AppCompatActivity {
         mUserIdTvArray[1] = findViewById(R.id.remote_video_1_user_id_tv);
         mUserIdTvArray[2] = findViewById(R.id.remote_video_2_user_id_tv);
         */
-        findViewById(R.id.switch_camera).setOnClickListener((v) -> onSwitchCameraClick());
-        mSpeakerIv = findViewById(R.id.switch_audio_router);   // 右上角
         mAudioIv = findViewById(R.id.switch_local_audio);      // 左下角
         mVideoIv = findViewById(R.id.switch_local_video);       // 右下角
         //findViewById(R.id.hang_up).setOnClickListener((v) -> onBackPressed());
         findViewById(R.id.leave).setOnClickListener((v) -> onBackPressed());
-        mSpeakerIv.setOnClickListener((v) -> updateSpeakerStatus());
         mAudioIv.setOnClickListener((v) -> updateLocalAudioStatus(userId));
         mVideoIv.setOnClickListener((v) -> updateLocalVideoStatus(userId));
         TextView roomIDTV = findViewById(R.id.room_id_text);
@@ -532,8 +491,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         userIDTV.setText(String.format("UserID:%s", userId));
     }
 
-
-    private void initEngineAndJoinRoom(String roomId, String userId) {
+    private void initEngineAndJoinRoom(String roomId, String userId, boolean sxt, boolean mkf) {
         // 创建引擎
         mRTCVideo = RTCVideo.createRTCVideo(getApplicationContext(), Constants.APPID, mIRtcVideoEventHandler, null, null);
         // 设置视频发布参数
@@ -541,9 +499,9 @@ public class RTCRoomActivity extends AppCompatActivity {
         mRTCVideo.setVideoEncoderConfig(videoEncoderConfig);
         setLocalRenderView(userId,RENDER_CAMERA);
         // 开启本地视频采集
-        mRTCVideo.startVideoCapture();
+        if(sxt) mRTCVideo.startVideoCapture();
         // 开启本地音频采集
-        mRTCVideo.startAudioCapture();
+        if(mkf) mRTCVideo.startAudioCapture();
 
         // 加入房间
         mRTCRoom = mRTCVideo.createRTCRoom(roomId);
@@ -630,19 +588,25 @@ public class RTCRoomActivity extends AppCompatActivity {
     private void onSwitchCameraClick() {
         // 切换前置/后置摄像头（默认使用前置摄像头）
         if (mCameraID.equals(CameraId.CAMERA_ID_FRONT)) {
+            Toast.makeText(RTCRoomActivity.this,"已切换至后置摄像头！",Toast.LENGTH_SHORT).show();
             mCameraID = CameraId.CAMERA_ID_BACK;
         } else {
+            Toast.makeText(RTCRoomActivity.this,"已切换至前置摄像头！",Toast.LENGTH_SHORT).show();
             mCameraID = CameraId.CAMERA_ID_FRONT;
         }
         mRTCVideo.switchCamera(mCameraID);
     }
 
     private void updateSpeakerStatus( ) {
+        if(mIsSpeakerPhone) {
+            Toast.makeText(RTCRoomActivity.this,"已切换至扬声器！",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(RTCRoomActivity.this,"已切换至手机听筒！",Toast.LENGTH_SHORT).show();
+        }
         mIsSpeakerPhone = !mIsSpeakerPhone;
         // 设置使用哪种方式播放音频数据
         mRTCVideo.setAudioRoute(mIsSpeakerPhone ? AudioRoute.AUDIO_ROUTE_SPEAKERPHONE
                 : AudioRoute.AUDIO_ROUTE_EARPIECE);
-        mSpeakerIv.setImageResource(mIsSpeakerPhone ? R.drawable.speaker_on : R.drawable.speaker_off);
     }
 
     private void updateLocalAudioStatus(String userId) {
@@ -704,6 +668,79 @@ public class RTCRoomActivity extends AppCompatActivity {
 
     public void OutSendMessage(){
         mHandler.sendMessage(Message.obtain(mHandler, 1));
+    }
+
+    @SuppressLint("RestrictedApi")
+    public void setMenu(String userId) {
+        ImageView amenu = (ImageView) findViewById(R.id.amenu);
+
+        amenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu pm = new PopupMenu(RTCRoomActivity.this, amenu);
+                pm.getMenuInflater().inflate(R.menu.menu,pm.getMenu());
+
+                pm.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case R.id.shareScreen:{
+                                if(ifHasMainSharer == false) {
+                                    // 当前无主共享人
+                                    Log.d("msg","local user request to be main screen sharer");
+                                    mRTCRoom.sendRoomMessage("main");
+                                    ifHasMainSharer = true;
+                                    currentMainSharerId = userId;
+                                    requestForScreenSharing();
+                                } else {
+                                    Log.d("msg","request to be main screen sharer fail, current main sharer id : "+currentMainSharerId);
+                                    Toast.makeText(RTCRoomActivity.this,"存在正在运行的投屏进程!",Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            }
+                            case R.id.shareScreen2:{
+//                                item.setVisible(true);
+                                if(currentMainSharerId == userId) {
+                                    //如果用户是主共享人的话停止共享
+                                    Toast.makeText(RTCRoomActivity.this,"投屏已经关闭！",Toast.LENGTH_SHORT).show();
+                                    Log.d("msg","local main screen sharer stop sharing");
+                                    mRTCRoom.unpublishScreen(MediaStreamType.RTC_MEDIA_STREAM_TYPE_BOTH);
+                                    mRTCVideo.stopScreenCapture();
+                                    mSelfContainer.removeAllViews();
+                                    ifHasMainSharer = false;
+                                    currentMainSharerId = "";
+                                } else {
+                                    Toast.makeText(RTCRoomActivity.this,"请先共享屏幕",Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            }
+                            case R.id.openVideo:{
+                                if(currentMainSharerId == userId) {
+                                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                                    intent.setDataAndType(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, "video/*");
+                                    startActivityForResult(intent, 2);
+                                    // TODO：重写，修改逻辑
+                                    Toast.makeText(RTCRoomActivity.this,"视频打开成功！",Toast.LENGTH_SHORT).show();
+                                }  else {
+                                    Toast.makeText(RTCRoomActivity.this,"请先共享屏幕",Toast.LENGTH_SHORT).show();
+                                }
+                                break;
+                            }
+                            case R.id.listener1:{
+                                updateSpeakerStatus();
+                                break;
+                            }
+                            case R.id.swithcamera:{
+                                onSwitchCameraClick();
+                                break;
+                            }
+                        }
+                        return false;
+                    }
+                });
+                pm.show();
+            }
+        });
     }
 
 }
