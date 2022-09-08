@@ -13,14 +13,12 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -35,7 +33,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,8 +63,6 @@ import com.ss.rtc.demo.quickstart.R;
 
 import org.webrtc.RXScreenCaptureService;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -332,10 +327,22 @@ public class RTCRoomActivity extends AppCompatActivity {
                 renderView.start();
                 //lab7_video.setMediaController(new MediaController(lab7_video.getContext()));
             }
+        } else if(resultCode == 1) {
+            String uri = data.getStringExtra("Uri");
+            VideoView renderView = new VideoView(this);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            mSelfContainer.removeAllViews();
+            mSelfContainer.addView(renderView, params);
+            renderView.setVideoPath(uri);
+            renderView.start();
+            Toast.makeText(RTCRoomActivity.this,"视频打开成功！",Toast.LENGTH_SHORT).show();
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+                super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
 
     private void startScreenShare(Intent data) {
         startRXScreenCaptureService(data);
@@ -573,9 +580,11 @@ public class RTCRoomActivity extends AppCompatActivity {
         mIsMuteAudio = !mIsMuteAudio;
         // 开启/关闭本地音频发送
         if (mIsMuteAudio) {
+            Toast.makeText(RTCRoomActivity.this,"麦克风关闭成功！",Toast.LENGTH_SHORT).show();
             mRTCRoom.unpublishStream(MediaStreamType.RTC_MEDIA_STREAM_TYPE_AUDIO);
             mRTCVideo.stopAudioCapture();
         } else {
+            Toast.makeText(RTCRoomActivity.this,"麦克风开启成功！",Toast.LENGTH_SHORT).show();
             mRTCRoom.publishStream(MediaStreamType.RTC_MEDIA_STREAM_TYPE_AUDIO);
             mRTCVideo.stopAudioCapture();
         }
@@ -588,8 +597,10 @@ public class RTCRoomActivity extends AppCompatActivity {
             // 关闭视频采集
             mRTCRoom.unpublishStream(MediaStreamType.RTC_MEDIA_STREAM_TYPE_VIDEO);
             mRTCVideo.stopVideoCapture();
+            Toast.makeText(RTCRoomActivity.this,"摄像头关闭成功！",Toast.LENGTH_SHORT).show();
         } else {
             // 开启视频采集
+            Toast.makeText(RTCRoomActivity.this,"摄像头开启成功！",Toast.LENGTH_SHORT).show();
             mRTCVideo.startVideoCapture();
             mRTCRoom.publishStream(MediaStreamType.RTC_MEDIA_STREAM_TYPE_VIDEO);
         }
