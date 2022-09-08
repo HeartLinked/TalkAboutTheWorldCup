@@ -87,7 +87,7 @@
                 android:text="  开启摄像头"
                 android:textColor="@color/grey"
                 android:textSize="17dp"
-                android:checked="true" />
+                android:checked="false" />
 
     </LinearLayout>
 
@@ -107,7 +107,7 @@
                 android:text="  开启麦克风"
                 android:textColor="@color/grey"
                 android:textSize="17dp"
-                android:checked="true" />
+                android:checked="false" />
 
     </LinearLayout>
 
