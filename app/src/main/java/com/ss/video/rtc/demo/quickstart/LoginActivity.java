@@ -81,11 +81,9 @@ public class LoginActivity extends AppCompatActivity {
         intent.putExtra(Constants.USER_ID_EXTRA, userId);
 
         CheckBox checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
-        //第二步：通过设置checkBox的监听事件来对checkBox是不是被选中
         checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //第三步：通过onCheckedChanged来监听当前的checkBox是否被选中
                 if(isChecked){
                     sxt = true;
                 }else{
@@ -98,11 +96,9 @@ public class LoginActivity extends AppCompatActivity {
         else intent.putExtra("sxt", false);
 
         CheckBox checkBox2 = (CheckBox) findViewById(R.id.checkBox1);
-        //第二步：通过设置checkBox的监听事件来对checkBox是不是被选中
         checkBox2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //第三步：通过onCheckedChanged来监听当前的checkBox是否被选中
                 if(isChecked){
                     sxt = true;
                 }else{
