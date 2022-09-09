@@ -34,6 +34,7 @@ public class VCChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 public void onClick(View view) {
                     RTCRoomActivity rtcRoomActivity = (RTCRoomActivity) view.getContext();
                     rtcRoomActivity.OutSendMessage();
+                    notifyItemChanged(position);
                 }
             });
         }

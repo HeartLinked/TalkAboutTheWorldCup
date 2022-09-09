@@ -16,6 +16,13 @@ public class Constants {
 
     //user id : thy
     //public static final String TOKEN = "00163120b429ebfba018975d577PABqHOEBTzYYY89wIWMDADEyMwMAdGh5BgAAAM9wIWMBAM9wIWMCAM9wIWMDAM9wIWMEAM9wIWMFAM9wIWMgAPpSFox1o9NLo8RRJIR+Z+BkyJC5l3ZoKj0scEbBBqYK";
+
+    //user id : test1
+    //public static final String TOKEN = "00163120b429ebfba018975d577PgBrHUkDf64aY//oI2MDADEyMwUAdGVzdDEGAAAA/+gjYwEA/+gjYwIA/+gjYwMA/+gjYwQA/+gjYwUA/+gjYyAAWwLwLiXb3yA+ju3K6XzUQYzqeglGQhakafkqjmaodsI=";
+
+    //user id : test2
+   // public static final String TOKEN = "00163120b429ebfba018975d577PgDeMlQDdrQaY/buI2MDADEyMwUAdGVzdDIGAAAA9u4jYwEA9u4jYwIA9u4jYwMA9u4jYwQA9u4jYwUA9u4jYyAAl4rR/sgssklyELD9EyPNiENOWHxiWIcdBV8ITO1pWi4=";
+
     //INPUT_REGEX SDK 对房间名、用户名的限制是：非空且最大长度不超过128位的数字、大小写字母、@ . _ | -
     public static final String INPUT_REGEX = "^[a-zA-Z0-9@._|-]{1,128}$";
 

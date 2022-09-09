@@ -184,9 +184,7 @@ public class RTCRoomActivity extends AppCompatActivity {
         public void onRoomMessageSendResult(long msgid, int error) {
             super.onRoomMessageSendResult(msgid, error);
             mHandler.sendMessage(Message.obtain(mHandler, 1));
-
             mVCChatRv.smoothScrollToPosition(mVCChatAdapter.getItemCount()- 1);
-
             Log.d("lfysendMessageID", String.valueOf(msgid));
             Log.d("lfySendMessageResult", String.valueOf(error));
         }
@@ -196,6 +194,7 @@ public class RTCRoomActivity extends AppCompatActivity {
             super.onUserMessageReceived(uid, message);
             mHandler.sendMessage(Message.obtain(mHandler, 1));
             mVCChatAdapter.addChatMsg(uid + ": " + message);
+
             Log.d("lfyUserMessageRecevied", uid + " " + message);
         }
 
@@ -495,7 +494,7 @@ public class RTCRoomActivity extends AppCompatActivity {
                 mRTCRoom.sendRoomMessage(MESSAGE);
                 mVCChatAdapter.addChatMsg(userId + ": " + MESSAGE);
                 textView.setText("");
-//                if(mVCChatAdapter.getItemCount() > 6) mVCChatRv.smoothScrollToPosition(mVCChatAdapter.getItemCount()-1);
+                if(mVCChatAdapter.getItemCount() > 6) mVCChatRv.smoothScrollToPosition(mVCChatAdapter.getItemCount()-1);
             }
         });
     }
