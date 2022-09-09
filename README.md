@@ -1,9 +1,18 @@
 # 一起来侃世界杯
 
-TalkAbouttheWorldCup | 一起来侃世界杯
+### 技术栈
 
-ZJU & ByteDance Android Development Course assignments
+- Java
+- 基于火山引擎的实时音视频SDK
 
-基于火山引擎 [跑通 Android 快速开始 Demo](https://www.volcengine.com/docs/6348/70129)
+### feature
 
-## Author：李飞扬 / 陶泓宇
+- 实时共享手机屏幕
+- 用户之间可以通过摄像头实时通话
+- 内置聊天框功能，用户可以文字聊天
+- 共享屏幕的用户可以播放本地视频/网络视频
+
+### author
+
+- https://github.com/biu9
+- https://github.com/HeartLinked
